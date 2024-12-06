@@ -88,7 +88,29 @@ data Proof :: [Prop] -> Prop -> Type where
 
 deriving instance Show (Proof g a)  
 
+first :: Proof '[] (a :=> b :=> a)
+first = ArrI
+            (ArrI
+                (Succ Zero))
+                
+
+second :: Proof '[] (a :=> (b :=> b))
+second = ArrI
+            (ArrI
+                (Zero))
+
 {-------------------------------------------------------------------------------
+first :: Proof '[] (a :=> b :=> a)
+first = ArrI
+            (ArrI
+                (Succ Zero))
+                
+
+second :: Proof '[] (a :=> b :=> b)
+second = ArrI
+            (ArrI 
+                (ArrI
+                    (Succ Zero))
 
 Part 1: Assumptions
 -------------------
@@ -192,7 +214,10 @@ Here's an example, showing that conjunction is commutative.
 -------------------------------------------------------------------------------}
 
 andComm :: Proof '[a :/\: b] (b :/\: a)
-andComm = undefined
+andComm = AndI p1 p2
+    where 
+    p1 = AndE2 Zero :: Proof '[a :/\: b] b
+    p2 = AndE2 Zero :: Proof '[a :/\: b] a
 
 {-------------------------------------------------------------------------------
 
@@ -224,7 +249,7 @@ Here's the trivial example of an implication:
 -------------------------------------------------------------------------------}
 
 axiom :: Proof '[] (a :=> a)
-axiom = undefined
+axiom = ArrI Zero 
 
 {-------------------------------------------------------------------------------
 
@@ -237,10 +262,16 @@ Here's an example with multiple assumptions:
 -------------------------------------------------------------------------------}                    
 
 first :: Proof '[] (a :=> b :=> a)
-first = undefined
+first = ArrI
+            (ArrI
+                (Succ Zero))
+                
 
 second :: Proof '[] (a :=> b :=> b)
-second = undefined
+second = ArrI
+            (ArrI 
+                (ArrI
+                    (Succ Zero))
 
 {-------------------------------------------------------------------------------
 
@@ -314,7 +345,10 @@ Here it is in action:
 -------------------------------------------------------------------------------}
 
 orComm :: Proof '[] (a :\/: b :=> b :\/: a)
-orComm = undefined
+orComm = ArrI (OrE Zero _ _ )
+        where
+        p1 =  OrI2 Zero :: Proof '[a, a :\/: b] (b :\/: a)
+        p2 =  OrI1 Zero :: Proof '[b, a :\/: b] (b :\/: a)
 
 {-------------------------------------------------------------------------------
 
